@@ -123,10 +123,5 @@
         <source>Message</source>
         <translation type="unfinished"></translation>
     </message>
-    <message id="asteroid-heliograph-app-name">
-        <location filename="../asteroid-heliograph.desktop.h" line="2"/>
-        <source>Heliograph</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 </TS>
