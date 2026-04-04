@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Heliograph
+Categories=Applications;
+Exec=asteroid-heliograph
+Icon=ios-chatbubbles-outline
+X-Asteroid-Center-Color=#2A1500
+X-Asteroid-Outer-Color=#000000
