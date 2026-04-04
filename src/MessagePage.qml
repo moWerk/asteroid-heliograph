@@ -207,7 +207,7 @@ Item {
             id: blinkAnim
             running: root.isBlinkMode && root.blinkCycleMs > 0
             loops:   Animation.Infinite
-            function onRunningChanged() { if (!running) blinkLabel.opacity = 1.0 }
+            onRunningChanged: { if (!running) blinkLabel.opacity = 1.0 }
 
             NumberAnimation {
                 target: blinkLabel; property: "opacity"
