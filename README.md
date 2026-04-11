@@ -16,6 +16,9 @@ category, or use `custom:` to create a personal category that appears
 first in the list. The file ships with usage instructions as comments.
 Changes take effect on next app launch.
 
+https://github.com/user-attachments/assets/66c30bc3-fb30-4363-a997-241118051b46
+
+### Screenshots
 
 ![shot-helio1](https://github.com/user-attachments/assets/8dca63bb-8d0a-435a-8e39-efda23f1d08e)
 
