@@ -1,4 +1,4 @@
-add_library(asteroid-heliograph main.cpp resources.qrc)
+add_library(asteroid-heliograph main.cpp FileHelper.cpp resources.qrc)
 set_target_properties(asteroid-heliograph PROPERTIES PREFIX "")
 
 target_link_libraries(asteroid-heliograph PUBLIC

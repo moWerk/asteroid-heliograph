@@ -1,0 +1,16 @@
+# asteroid-heliograph custom messages
+#
+# Add your own messages to any category below.
+# Lines starting with # are ignored.
+#
+# To add a message to an existing category, use:
+#   social: I love you
+#   fun: Send nodes
+#   emergency: Call my mum
+#   navigation: Follow the dog
+#
+# To create your own Custom category (appears as first category in the app):
+#   custom: You are breathtaking
+#   custom: Deploy to prod on Friday
+#
+# Changes take effect on next app launch.

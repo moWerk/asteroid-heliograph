@@ -26,6 +26,11 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/asteroid-heliograph
 
 install(FILES asteroid-heliograph.desktop
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+    
+install(FILES custom.txt
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/asteroid-heliograph)
+
+build_translations(i18n)
 
 build_translations(i18n)
 add_subdirectory(src)

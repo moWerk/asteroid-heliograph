@@ -19,6 +19,7 @@ import QtQuick 2.9
 import QtSensors 5.11
 import org.asteroid.controls 1.0
 import org.asteroid.utils 1.0
+import moWerk.FileHelper 1.0
 
 Item {
     id: root
@@ -26,8 +27,8 @@ Item {
     property real userPixelsPerSecond: 300
     property real blinkCycleMs:        1200
 
-    property bool isBlinkMode: catIndex === 4
-    property bool isSmallFont: catIndex === 4 || catIndex === 5
+    property bool isBlinkMode: catIndex === categories.indexOf("Emoji")
+    property bool isSmallFont: catIndex === categories.indexOf("Emoji") || catIndex === categories.indexOf("Kaomoji")
 
     property real smoothedX: 0
     property real smoothedY: 0
@@ -125,7 +126,32 @@ Item {
          "<(^_^<)"]
     ]
 
+    property bool hasCustomCategory: false
+
     property int catIndex: 0
+
+    Component.onCompleted: {
+        // Read user-defined custom category entries
+        var customMsgs = FileHelper.messagesForCategory("custom")
+        if (customMsgs.length > 0) {
+            //% "Custom"
+            hasCustomCategory = true
+            messages.unshift(customMsgs)
+            categories.unshift(qsTrId("id-cat-custom"))
+        }
+
+        var keys = ["emergency", "navigation", "social", "fun"]
+        for (var i = 0; i < keys.length; i++) {
+            var extra = FileHelper.messagesForCategory(keys[i])
+            if (extra.length > 0) {
+                var idx = i + (hasCustomCategory ? 1 : 0)
+                messages[idx] = extra.concat(messages[idx])
+            }
+        }
+        categories = categories
+        messages = messages
+    }
+
     property int msgIndex: 0
 
     function resetSpeed() {

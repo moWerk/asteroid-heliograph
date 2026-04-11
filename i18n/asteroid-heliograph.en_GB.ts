@@ -123,5 +123,9 @@
         <source>Message</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="id-cat-custom">
+        <source>Custom</source>
+        <translation>Custom</translation>
+    </message>
 </context>
 </TS>

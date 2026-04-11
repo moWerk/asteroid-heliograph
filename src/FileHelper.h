@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2026 - Timo Könnecke <github.com/moWerk>
+ *               2025 - Ed Beroset <beroset@ieee.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,14 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <asteroidapp.h>
-#include <QtQml>
-#include "FileHelper.h"
+#ifndef FILEHELPER_H
+#define FILEHELPER_H
 
-int main(int argc, char *argv[])
+#include <QObject>
+#include <QJSEngine>
+#include <QQmlEngine>
+#include <QStringList>
+
+class FileHelper : public QObject
 {
-    qmlRegisterSingletonType<FileHelper>(
-        "moWerk.FileHelper", 1, 0, "FileHelper",
-        FileHelper::qmlInstance);
-    return AsteroidApp::main(argc, argv);
-}
+    Q_OBJECT
+    Q_DISABLE_COPY(FileHelper)
+    FileHelper() {}
+
+public:
+    static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+    {
+        Q_UNUSED(engine);
+        Q_UNUSED(scriptEngine);
+        return new FileHelper;
+    }
+
+    Q_INVOKABLE QStringList messagesForCategory(const QString &categoryKey) const;
+};
+
+#endif // FILEHELPER_H

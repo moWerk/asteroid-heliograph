@@ -99,5 +99,9 @@
         <source>Message</source>
         <translation>Nachricht</translation>
     </message>
+    <message id="id-cat-custom">
+        <source>Custom</source>
+        <translation>Eigene</translation>
+    </message>
 </context>
 </TS>
