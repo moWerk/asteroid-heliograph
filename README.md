@@ -8,6 +8,15 @@ Fun, Emoji and Kaomoji categories. Drag horizontally while active to
 adjust scroll speed. The screen auto-rotates to stay readable regardless
 of wrist angle.
 
+### Custom messages
+
+Edit `/home/ceres/.local/share/asteroid-heliograph/custom.txt` to add
+your own messages. Prefix with a category key to insert into an existing
+category, or use `custom:` to create a personal category that appears
+first in the list. The file ships with usage instructions as comments.
+Changes take effect on next app launch.
+
+
 ![shot-helio1](https://github.com/user-attachments/assets/8dca63bb-8d0a-435a-8e39-efda23f1d08e)
 
 ![shot-helio2](https://github.com/user-attachments/assets/0a5bd018-4f57-43c8-af13-07426617e796)
