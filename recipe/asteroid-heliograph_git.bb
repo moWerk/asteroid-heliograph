@@ -11,6 +11,13 @@ S = "${WORKDIR}/git"
 
 inherit cmake_qt5 pkgconfig
 
-DEPENDS += "nemo-keepalive qml-asteroid qtsensors qttools-native qtdeclarative-native"
+DEPENDS:append = " nemo-keepalive qml-asteroid qtsensors qttools-native qtdeclarative-native"
 
-FILES:${PN} += "/usr/lib/asteroid-heliograph.so /usr/share/translations/"
+do_install:append() {
+    install -d ${D}/home/ceres/.local/share/asteroid-heliograph
+    install -m 0644 ${S}/custom.txt ${D}/home/ceres/.local/share/asteroid-heliograph/custom.txt
+}
+
+FILES:${PN}:append = " /usr/lib/asteroid-heliograph.so"
+FILES:${PN}:append = " /usr/share/translations/"
+FILES:${PN}:append = " /home/ceres/.local/share/asteroid-heliograph/custom.txt"
