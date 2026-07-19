@@ -33,7 +33,6 @@ QStringList FileHelper::messagesForCategory(const QString &categoryKey) const
     }
 
     QTextStream in(&file);
-    in.setCodec("UTF-8");
     QStringList results;
     const QString prefix = categoryKey.toLower() + ":";
 
