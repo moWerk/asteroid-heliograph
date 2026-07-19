@@ -29,9 +29,8 @@ Application {
     property bool messageOn:       false
     property int  startBrightness: -1
 
-    onMessageOnChanged: DisplayBlanking.preventBlanking = messageOn
+    DisplayBlanking { preventBlanking: messageOn }
 
-    Component.onCompleted: DisplayBlanking.preventBlanking = messageOn
     Component.onDestruction: {
         if (startBrightness !== -1)
             displaySettings.brightness = startBrightness
