@@ -15,37 +15,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick
-import org.asteroid.controls
-import org.asteroid.settings
-import Nemo.KeepAlive
+import QtQuick 2.6
 
-Application {
-    id: app
+// Stand-in for HighlightBar of org.asteroid.controls: a press highlight
+// that fills its parent and reports clicks.
+Item {
+    id: bar
 
-    centerColor: "#2A1500"
-    outerColor:  "#000000"
+    property alias radius: highlight.radius
+    signal clicked()
 
-    property bool messageOn:       false
-    property int  startBrightness: -1
+    anchors.fill: parent
 
-    DisplayBlanking { preventBlanking: messageOn }
-
-    Component.onDestruction: {
-        if (startBrightness !== -1)
-            displaySettings.brightness = startBrightness
-    }
-
-    DisplaySettings {
-        id: displaySettings
-        onBrightnessChanged: {
-            if (app.startBrightness !== -1) return
-            app.startBrightness = brightness
-            brightness = maximumBrightness
-        }
-    }
-
-    MessagePage {
+    Rectangle {
+        id: highlight
         anchors.fill: parent
+        color: "#ffffff"
+        opacity: mouse.pressed ? 0.2 : 0
+        Behavior on opacity { NumberAnimation { duration: 100 } }
+    }
+
+    MouseArea {
+        id: mouse
+        anchors.fill: parent
+        onClicked: bar.clicked()
     }
 }

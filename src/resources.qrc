@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>MessagePage.qml</file>
-        <file>BannerScroll.qml</file>
-        <file>ValueCycler.qml</file>
-    </qresource>
-</RCC>

@@ -15,11 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick
-import QtSensors
-import org.asteroid.controls
-import org.asteroid.utils
-import moWerk.FileHelper
+import QtQuick 2.6
+import QtSensors 5.2
+import moWerk.FileHelper 1.0
+import "."
 
 Item {
     id: root
@@ -46,7 +45,7 @@ Item {
 
     Connections {
         target: app
-        function onMessageOnChanged() {
+        onMessageOnChanged: {
             if (!app.messageOn) {
                 root.smoothedX = 0
                 root.smoothedY = 0
@@ -249,7 +248,7 @@ Item {
 
         Connections {
             target: root
-            function onBlinkCycleMsChanged() {
+            onBlinkCycleMsChanged: {
                 if (root.isBlinkMode && root.blinkCycleMs > 0) {
                     blinkAnim.restart()
                 } else {

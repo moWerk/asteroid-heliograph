@@ -29,3 +29,28 @@ https://github.com/user-attachments/assets/66c30bc3-fb30-4363-a997-241118051b46
 ![shot-helio4](https://github.com/user-attachments/assets/5e321eb0-f11e-4b04-8283-8addf6495f99)
 
 ![shot-helio5](https://github.com/user-attachments/assets/825b1313-b50d-42e0-9bb4-d421ab7adf29)
+
+## SailfishOS
+
+The `sailfishos` branch is the SailfishOS version, built for Sailfish OS
+5.1 on aarch64 and run on a Jolla C2. The banner is the watch app; the
+controls keep the watch proportions across the phone's width, and the
+banner fills the whole screen when it runs.
+
+- Your own messages go into
+  `~/.local/share/net.mowerk/harbour-asteroid-heliograph/custom.txt`.
+  The first start copies the documented template there.
+- The app reads the accelerometer to keep the banner level, so it asks
+  once for the Sensors permission when it is started from the app grid.
+- The brightness is raised to maximum while a message is shown and set
+  back when the app closes normally, as on the watch. If the app is
+  killed, the brightness stays at maximum.
+- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.0.0-1.aarch64.rpm`
+  (aarch64 only).
+- Build: `mb2 -t SailfishOS-5.1.0.11-aarch64 build` with the Sailfish
+  Platform SDK.
+
+```
+Disclosure: LLMGD-2 · origin O0 (LLM-ported overnight; checked through window grabs on one Jolla C2; full screen banner not seen; not used or read by a human; self-graded)
+LLMGD: v0.2; assurance=A2; flags=T; origin={O0:.9,O1:.1}; origin_headline=O0; scope=port(code+assets+packaging+docs); graded-by=claude-opus-5-5; retrieval=author-side
+```

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<!-- Launcher icon for SailfishOS: square background as on the Terminal icon
+     (Sailfish Apps icon template, CC BY 3.0) in Heliograph's amber, a sun
+     and a banner with scrolling text marks. -->
+<defs><radialGradient id="bg" cx="256" cy="256" r="256" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6b3a00"/><stop offset="1" stop-color="#140800"/></radialGradient></defs>
+<rect x="1.8" y="1.8" width="508.4" height="508.4" rx="8.5" ry="8.5" fill="url(#bg)"/>
+<circle cx="256" cy="200" r="110" fill="#FFB830"/>
+<g stroke="#FFB830" stroke-width="14" stroke-linecap="round"><line x1="406.0" y1="200.0" x2="446.0" y2="200.0"/><line x1="385.9" y1="275.0" x2="420.5" y2="295.0"/><line x1="331.0" y1="329.9" x2="351.0" y2="364.5"/><line x1="256.0" y1="350.0" x2="256.0" y2="390.0"/><line x1="181.0" y1="329.9" x2="161.0" y2="364.5"/><line x1="126.1" y1="275.0" x2="91.5" y2="295.0"/><line x1="106.0" y1="200.0" x2="66.0" y2="200.0"/><line x1="126.1" y1="125.0" x2="91.5" y2="105.0"/><line x1="181.0" y1="70.1" x2="161.0" y2="35.5"/><line x1="256.0" y1="50.0" x2="256.0" y2="10.0"/><line x1="331.0" y1="70.1" x2="351.0" y2="35.5"/><line x1="385.9" y1="125.0" x2="420.5" y2="105.0"/></g>
+<rect x="56" y="300" width="400" height="120" rx="22" fill="#000000" stroke="#ffffff" stroke-width="10"/>
+<g fill="#ffffff"><rect x="96" y="340" width="70" height="40" rx="8"/><rect x="186" y="340" width="110" height="40" rx="8"/><rect x="316" y="340" width="100" height="40" rx="8" opacity="0.5"/></g>
+</svg>

@@ -20,12 +20,20 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QDir>
+#include <QStandardPaths>
 
-static const QString dataFile =
-    QStringLiteral("/home/ceres/.local/share/asteroid-heliograph/custom.txt");
+// SailfishOS: the per-app data directory, ~/.local/share/<org>/<app>/.
+// main.cpp copies the bundled template there on first start.
+static QString dataFilePath()
+{
+    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
+            + QStringLiteral("/custom.txt");
+}
 
 QStringList FileHelper::messagesForCategory(const QString &categoryKey) const
 {
+    const QString dataFile = dataFilePath();
     QFile file(dataFile);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "FileHelper: cannot open" << dataFile << file.errorString();

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=harbour-asteroid-heliograph
+Exec=harbour-asteroid-heliograph
+Name=Heliograph
+Comment=Show a message as a big scrolling banner
+
+[X-Sailjail]
+# Sandboxed. The app reads the accelerometer (Sensors) to keep the banner level, and sets the display brightness while it shows a message.
+OrganizationName=net.mowerk
+ApplicationName=harbour-asteroid-heliograph
+Permissions=Sensors

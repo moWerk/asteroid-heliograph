@@ -15,14 +15,53 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <asteroidapp.h>
+#include <sailfishapp.h>
+#include <QFontDatabase>
+#include <QGuiApplication>
+#include <QQuickView>
+#include <QScopedPointer>
+#include <QTimer>
 #include <QtQml>
+#include <QDir>
+#include <QFile>
+#include <QStandardPaths>
 #include "FileHelper.h"
 
 int main(int argc, char *argv[])
 {
+    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+    app->setOrganizationName(QStringLiteral("net.mowerk"));
+    app->setApplicationName(QStringLiteral("harbour-asteroid-heliograph"));
+
     qmlRegisterSingletonType<FileHelper>(
         "moWerk.FileHelper", 1, 0, "FileHelper",
         FileHelper::qmlInstance);
-    return AsteroidApp::main(argc, argv);
+
+    // Your own messages live in the app's data directory; the first start
+    // copies the documented template there.
+    {
+        const QString dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        QDir().mkpath(dir);
+        if (!QFile::exists(dir + QStringLiteral("/custom.txt")))
+            QFile::copy(SailfishApp::pathTo(QStringLiteral("custom.txt")).toLocalFile(),
+                        dir + QStringLiteral("/custom.txt"));
+    }
+
+    QScopedPointer<QQuickView> view(SailfishApp::createView());
+    view->setSource(SailfishApp::pathToMainQml());
+    view->show();
+
+    // Test hook, not used in normal runs: with SFOS_SELFTEST_SHOT=<file>
+    // the window is grabbed after SFOS_SELFTEST_DELAY ms (default 6000)
+    // and saved, so a build can be checked without looking at the phone.
+    const QByteArray shot = qgetenv("SFOS_SELFTEST_SHOT");
+    if (!shot.isEmpty()) {
+        const int delay = qEnvironmentVariableIsSet("SFOS_SELFTEST_DELAY")
+                ? qgetenv("SFOS_SELFTEST_DELAY").toInt() : 6000;
+        QQuickView *v = view.data();
+        QTimer::singleShot(delay, v, [v, shot]() {
+            v->grabWindow().save(QString::fromLocal8Bit(shot));
+        });
+    }
+    return app->exec();
 }
