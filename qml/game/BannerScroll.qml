@@ -38,7 +38,9 @@ Item {
         y: Math.round((root.height - contentHeight) / 2)
         text:           root.message.toUpperCase()
         font.pixelSize: root.fontSize
-        font.styleName: root.fontStyleName
+        // SailfishOS: Sail Sans has no "Bold" style name, so the banner came out
+        // regular weight; ask for the weight instead
+        font.weight:    root.fontStyleName === "Bold" ? Font.Bold : Font.Normal
         color:          "#ffffff"
         verticalAlignment: Text.AlignVCenter
         onContentWidthChanged: root.restartScroll()

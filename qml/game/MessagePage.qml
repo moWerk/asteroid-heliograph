@@ -186,8 +186,12 @@ Item {
         id: messageRect
         anchors.centerIn: parent
         color: "#000000"
-        width:  app.messageOn ? root.width  : Dims.w(40)
-        height: app.messageOn ? root.height : Dims.w(40)
+        // SailfishOS: the banner turns with the tilt. A rectangle the size of
+        // a tall screen, turned sideways, covers only a square of it. As a
+        // square with the screen's diagonal it covers the screen at any angle.
+        readonly property real fullSize: Math.sqrt(root.width * root.width + root.height * root.height)
+        width:  app.messageOn ? fullSize : Dims.w(40)
+        height: app.messageOn ? fullSize : Dims.w(40)
         radius: app.messageOn
             ? (DeviceSpecs.hasRoundScreen ? width / 2 : 0)
             : Dims.l(4)

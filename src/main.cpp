@@ -48,6 +48,9 @@ int main(int argc, char *argv[])
     }
 
     QScopedPointer<QQuickView> view(SailfishApp::createView());
+    // Test hook: SFOS_SELFTEST_AUTOSTART=1 shows the banner without a tap.
+    view->rootContext()->setContextProperty(QStringLiteral("selftestAutostart"),
+                                            qEnvironmentVariableIsSet("SFOS_SELFTEST_AUTOSTART"));
     view->setSource(SailfishApp::pathToMainQml());
     view->show();
 
