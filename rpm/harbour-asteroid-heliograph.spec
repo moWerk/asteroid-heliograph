@@ -1,6 +1,6 @@
 Name:       harbour-asteroid-heliograph
 Summary:    Heliograph, a text banner
-Version:    1.0.0
+Version:    1.0.1
 Release:    1
 License:    GPLv3+
 URL:        https://github.com/moWerk/asteroid-heliograph

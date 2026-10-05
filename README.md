@@ -45,7 +45,7 @@ banner fills the whole screen when it runs.
 - The brightness is raised to maximum while a message is shown and set
   back when the app closes normally, as on the watch. If the app is
   killed, the brightness stays at maximum.
-- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.0.0-1.aarch64.rpm`
+- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.0.1-1.aarch64.rpm`
   (aarch64 only).
 - Build: `mb2 -t SailfishOS-5.1.0.11-aarch64 build` with the Sailfish
   Platform SDK.
