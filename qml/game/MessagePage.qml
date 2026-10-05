@@ -338,7 +338,8 @@ Item {
             if (root.isBlinkMode) {
                 root.blinkCycleMs = Math.max(300, Math.min(1500, pressBlinkCycle - delta / 1.5))
             } else {
-                root.userPixelsPerSecond = Math.max(160, Math.min(1500, pressSpeed - delta / 1.5))
+                // SailfishOS: up to 2000 px/s, 1500 was too slow for the long phone screen (mo)
+                root.userPixelsPerSecond = Math.max(160, Math.min(2000, pressSpeed - delta / 1.5))
             }
             speedLabel.opacity = 1
         }
