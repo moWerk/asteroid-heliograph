@@ -50,7 +50,11 @@ banner fills the whole screen when it runs.
 - Build: `mb2 -t SailfishOS-5.1.0.11-aarch64 build` with the Sailfish
   Platform SDK.
 
+The author tested the port on his C2 and had three things changed: the
+full screen banner covers the whole screen at any tilt, the banner text
+is bold, and the scroll speed goes up to 2000 px/s.
+
 ```
-Disclosure: LLMGD-2 · origin O0 (LLM-ported overnight; checked through window grabs on one Jolla C2; full screen banner not seen; not used or read by a human; self-graded)
-LLMGD: v0.2; assurance=A2; flags=T; origin={O0:.9,O1:.1}; origin_headline=O0; scope=port(code+assets+packaging+docs); graded-by=claude-opus-5-5; retrieval=author-side
+Disclosure: LLMGD-3 · origin O1 (LLM-ported; the author tested it on his Jolla C2 and had the banner area, font weight and speed limit changed; code not read; self-graded)
+LLMGD: v0.2; assurance=A3; flags=U,T; origin={O0:.7,O1:.3}; origin_headline=O0; scope=port(code+assets+packaging+docs); graded-by=claude-opus-5-5; retrieval=author-side
 ```
