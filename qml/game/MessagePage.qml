@@ -136,6 +136,7 @@ Item {
             //% "Custom"
             hasCustomCategory = true
             messages.unshift(customMsgs)
+            //% "Custom"
             categories.unshift(qsTrId("id-cat-custom"))
         }
 

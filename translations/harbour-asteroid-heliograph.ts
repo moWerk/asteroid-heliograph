@@ -119,12 +119,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message id="id-cat-custom">
-        <location filename="../qml/game/MessagePage.qml" line="139"/>
-        <source></source>
+        <location filename="../qml/game/MessagePage.qml" line="140"/>
+        <source>Custom</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="id-message">
-        <location filename="../qml/game/MessagePage.qml" line="163"/>
+        <location filename="../qml/game/MessagePage.qml" line="164"/>
         <source>Message</source>
         <translation type="unfinished"></translation>
     </message>
