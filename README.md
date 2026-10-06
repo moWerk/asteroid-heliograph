@@ -37,16 +37,22 @@ The `sailfishos` branch is the SailfishOS version, built for Sailfish OS
 controls keep the watch proportions across the phone's width, and the
 banner fills the whole screen when it runs.
 
-- Your own messages go into
-  `~/.local/share/net.mowerk/harbour-asteroid-heliograph/custom.txt`.
-  The first start copies the documented template there.
+- Your own messages: tap **+** below the messages, type, and tap Add
+  (or the keyboard's enter key). The message goes into the Custom
+  category, which is the first one, and is shown at once. In the Custom
+  category, **−** removes the shown message; it turns red first, a second
+  tap within 3 seconds deletes. Both edit
+  `~/.local/share/net.mowerk/harbour-asteroid-heliograph/custom.txt`,
+  where you can also add messages to the other categories by hand. The
+  first start copies the documented template there.
 - The app reads the accelerometer to keep the banner level, so it asks
   once for the Sensors permission when it is started from the app grid.
 - The brightness is raised to maximum while a message is shown and set
   back when the app closes normally, as on the watch. If the app is
   killed, the brightness stays at maximum.
-- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.0.1-1.aarch64.rpm`
-  (aarch64 only).
+- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.1.0-1.<arch>.rpm`
+  (aarch64 for 4.5 and later, armv7hl for 3.4 and later, i486 for 4.5
+  and later).
 - Build: `mb2 -t SailfishOS-5.1.0.11-aarch64 build` with the Sailfish
   Platform SDK.
 
@@ -57,4 +63,17 @@ is bold, and the scroll speed goes up to 2000 px/s.
 ```
 Disclosure: LLMGD-3 · origin O1 (LLM-ported; the author tested it on his Jolla C2 and had the banner area, font weight and speed limit changed; code not read; self-graded)
 LLMGD: v0.2; assurance=A3; flags=U,T; origin={O0:.7,O1:.3}; origin_headline=O0; scope=port(code+assets+packaging+docs); graded-by=claude-opus-5-5; retrieval=author-side
+```
+
+The text input (1.1.0) was asked for on the forum and by the author.
+Checked on a Jolla C2 with a test hook (`SFOS_SELFTEST_EDIT=1`) that
+runs the same add and remove code as the buttons: umlauts and emoji
+survive, a line break becomes a space, the Custom category appears and
+goes again, and custom.txt is byte for byte as before afterwards. The
+buttons, the text field and the keyboard have not been seen or used on
+the phone yet.
+
+```
+Disclosure: LLMGD-2 · origin O1 (author-requested feature, default design by the LLM; file and list logic checked by a test hook on one Jolla C2; the UI not seen; self-graded)
+LLMGD: v0.2; assurance=A2; flags=U,T; origin={O0:.8,O1:.2}; origin_headline=O0; scope=feature(code+docs); graded-by=claude-opus-5-5; retrieval=author-side
 ```

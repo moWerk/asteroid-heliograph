@@ -13,4 +13,7 @@
 #   custom: You are breathtaking
 #   custom: Deploy to prod on Friday
 #
-# Changes take effect on next app launch.
+# Messages you type in the app (the + below the messages) are added
+# here as custom: lines, and the - there removes them again.
+#
+# Changes made in this file take effect on next app launch.

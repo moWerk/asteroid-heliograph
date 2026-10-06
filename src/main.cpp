@@ -51,6 +51,10 @@ int main(int argc, char *argv[])
     // Test hook: SFOS_SELFTEST_AUTOSTART=1 shows the banner without a tap.
     view->rootContext()->setContextProperty(QStringLiteral("selftestAutostart"),
                                             qEnvironmentVariableIsSet("SFOS_SELFTEST_AUTOSTART"));
+    // Test hook: SFOS_SELFTEST_EDIT=1 adds a message the way the + does,
+    // logs the lists, removes it the way the - does, logs again.
+    view->rootContext()->setContextProperty(QStringLiteral("selftestEdit"),
+                                            qEnvironmentVariableIsSet("SFOS_SELFTEST_EDIT"));
     view->setSource(SailfishApp::pathToMainQml());
     view->show();
 

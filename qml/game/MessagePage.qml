@@ -18,6 +18,7 @@
 import QtQuick 2.6
 import QtSensors 5.2
 import moWerk.FileHelper 1.0
+import Sailfish.Silica 1.0 as Silica
 import "."
 
 Item {
@@ -56,7 +57,9 @@ Item {
     anchors.fill: parent
     clip: true
 
-    property var categories: [
+    // SailfishOS: the built-in lists stay untouched; reload() builds the
+    // shown lists from them and custom.txt, again after an in-app edit.
+    readonly property var baseCategories: [
         //% "Emergency"
         qsTrId("id-cat-emergency"),
         //% "Navigation"
@@ -69,7 +72,7 @@ Item {
         "Kaomoji"
     ]
 
-    property var messages: [
+    readonly property var baseMessages: [
         [
             //% "Help"
             qsTrId("id-msg-help"),
@@ -125,31 +128,75 @@ Item {
          "<(^_^<)"]
     ]
 
+    property var  categories: baseCategories
+    property var  messages:   baseMessages
     property bool hasCustomCategory: false
 
     property int catIndex: 0
 
-    Component.onCompleted: {
+    // a QStringList from C++ arrives as a sequence wrapper; a plain array
+    // is what indexOf, concat and JSON need
+    function fileMessages(key) {
+        var list = FileHelper.messagesForCategory(key)
+        var out = []
+        for (var i = 0; i < list.length; i++) out.push(list[i])
+        return out
+    }
+
+    function reload() {
+        var cats = baseCategories.slice()
+        var msgs = baseMessages.map(function (list) { return list.slice() })
         // Read user-defined custom category entries
-        var customMsgs = FileHelper.messagesForCategory("custom")
-        if (customMsgs.length > 0) {
+        var customMsgs = fileMessages("custom")
+        hasCustomCategory = customMsgs.length > 0
+        if (hasCustomCategory) {
+            msgs.unshift(customMsgs)
             //% "Custom"
-            hasCustomCategory = true
-            messages.unshift(customMsgs)
-            //% "Custom"
-            categories.unshift(qsTrId("id-cat-custom"))
+            cats.unshift(qsTrId("id-cat-custom"))
         }
 
         var keys = ["emergency", "navigation", "social", "fun"]
         for (var i = 0; i < keys.length; i++) {
-            var extra = FileHelper.messagesForCategory(keys[i])
+            var extra = fileMessages(keys[i])
             if (extra.length > 0) {
                 var idx = i + (hasCustomCategory ? 1 : 0)
-                messages[idx] = extra.concat(messages[idx])
+                msgs[idx] = extra.concat(msgs[idx])
             }
         }
-        categories = categories
-        messages = messages
+        categories = cats
+        messages = msgs
+    }
+
+    Component.onCompleted: reload()
+
+    // Test hook (set from main.cpp): the + and - paths without taps
+    Timer {
+        interval: 1500
+        running: typeof selftestEdit !== "undefined" && selftestEdit
+        onTriggered: {
+            var t = "Selftest \u00e4\u00f6\u00fc \uD83D\uDE80 " + new Date().getTime()
+            var stored = FileHelper.addMessage("  " + t + "\nsecond line ")
+            root.reload(); root.showCustom(stored)
+            console.log("selftest edit: added '" + stored + "' categories " + JSON.stringify(root.categories)
+                        + " custom " + JSON.stringify(root.hasCustomCategory ? root.messages[0] : [])
+                        + " shown '" + root.messages[root.catIndex][root.msgIndex] + "'")
+            var gone = FileHelper.removeMessage(stored)
+            root.msgIndex = 0; root.reload(); root.showCustom("")
+            console.log("selftest edit: removed '" + gone + "' categories " + JSON.stringify(root.categories)
+                        + " shown '" + root.messages[root.catIndex][root.msgIndex] + "'")
+        }
+    }
+
+    // after an edit: show the Custom category at the given message, or the
+    // first category when the last own message is gone
+    function showCustom(text) {
+        catIndex = 0
+        msgIndex = 0
+        if (hasCustomCategory) {
+            var i = messages[0].indexOf(text)
+            msgIndex = i >= 0 ? i : messages[0].length - 1
+        }
+        resetSpeed()
     }
 
     property int msgIndex: 0
@@ -288,6 +335,152 @@ Item {
         onValueChanged: {
             msgIndex = messages[catIndex].indexOf(value)
             resetSpeed()
+        }
+    }
+
+    // ── SailfishOS: own messages, typed in the app ────────────────────────────
+    // + opens a text field; − removes the shown message of the Custom
+    // category (second tap within 3 s confirms). Both write custom.txt.
+    Row {
+        id: editButtons
+        anchors.top: messageCycler.bottom
+        anchors.topMargin: Dims.l(6)
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: Dims.l(14)
+        visible: !app.messageOn && !editor.visible
+
+        Item {
+            width: Dims.l(12); height: width
+            Rectangle { anchors.fill: parent; radius: width / 2; color: "#000000"; opacity: 0.4 }
+            Icon {
+                anchors.centerIn: parent
+                width: Dims.l(8); height: width
+                name: "ios-add"
+            }
+            MouseArea {
+                anchors.fill: parent
+                anchors.margins: -Dims.l(3)
+                onClicked: editor.open()
+            }
+        }
+
+        Item {
+            id: removeButton
+            property bool armed: false
+            width: Dims.l(12); height: width
+            visible: root.hasCustomCategory && root.catIndex === 0
+            Rectangle {
+                anchors.fill: parent; radius: width / 2
+                color: removeButton.armed ? "#B00020" : "#000000"
+                opacity: removeButton.armed ? 0.9 : 0.4
+            }
+            Icon {
+                anchors.centerIn: parent
+                width: Dims.l(8); height: width
+                name: "ios-remove"
+            }
+            Timer { id: disarm; interval: 3000; onTriggered: removeButton.armed = false }
+            MouseArea {
+                anchors.fill: parent
+                anchors.margins: -Dims.l(3)
+                onClicked: {
+                    if (!removeButton.armed) {
+                        removeButton.armed = true
+                        disarm.restart()
+                        return
+                    }
+                    removeButton.armed = false
+                    disarm.stop()
+                    var gone = FileHelper.removeMessage(root.messages[0][root.msgIndex])
+                    if (gone !== "") {
+                        var next = root.msgIndex > 0 ? root.messages[0][root.msgIndex - 1] : ""
+                        root.msgIndex = 0   // valid in any list while they change
+                        root.reload()
+                        root.showCustom(next)
+                    }
+                }
+            }
+        }
+    }
+
+    Label {
+        anchors.top: editButtons.bottom
+        anchors.topMargin: Dims.l(2)
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: removeButton.armed && editButtons.visible
+        //% "Tap again to delete"
+        text: qsTrId("id-tap-again-to-delete")
+        font.pixelSize: Dims.l(5)
+        opacity: 0.8
+    }
+
+    Rectangle {
+        id: editor
+        anchors.fill: parent
+        color: "#000000"
+        opacity: 0.92
+        visible: false
+        z: 10
+
+        function open() {
+            input.text = ""
+            visible = true
+            input.forceActiveFocus()
+        }
+        function close() {
+            input.focus = false
+            visible = false
+        }
+        function save() {
+            var stored = FileHelper.addMessage(input.text)
+            close()
+            if (stored !== "") {
+                root.reload()
+                root.showCustom(stored)
+            }
+        }
+
+        // swallow taps on the dimmed area; tapping outside the field cancels
+        MouseArea { anchors.fill: parent; onClicked: editor.close() }
+
+        Column {
+            anchors.top: parent.top
+            anchors.topMargin: Dims.l(26)
+            width: parent.width
+            spacing: Dims.l(4)
+
+            Label {
+                anchors.horizontalCenter: parent.horizontalCenter
+                //% "New message"
+                text: qsTrId("id-new-message")
+                font.pixelSize: Dims.l(7)
+            }
+
+            Silica.TextField {
+                id: input
+                width: parent.width
+                //% "Your message"
+                placeholderText: qsTrId("id-your-message")
+                Silica.EnterKey.enabled: text.trim().length > 0
+                Silica.EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+                Silica.EnterKey.onClicked: editor.save()
+            }
+
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: Dims.l(6)
+                Silica.Button {
+                    //% "Cancel"
+                    text: qsTrId("id-cancel")
+                    onClicked: editor.close()
+                }
+                Silica.Button {
+                    //% "Add"
+                    text: qsTrId("id-add")
+                    enabled: input.text.trim().length > 0
+                    onClicked: editor.save()
+                }
+            }
         }
     }
 

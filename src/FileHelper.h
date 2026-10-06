@@ -39,6 +39,12 @@ public:
     }
 
     Q_INVOKABLE QStringList messagesForCategory(const QString &categoryKey) const;
+
+    // SailfishOS: own messages typed in the app go into the same file as
+    // "custom: <text>" lines, so the file stays the one place they live.
+    // Both return the stored text ("" when nothing was written/removed).
+    Q_INVOKABLE QString addMessage(const QString &text);
+    Q_INVOKABLE QString removeMessage(const QString &text);
 };
 
 #endif // FILEHELPER_H

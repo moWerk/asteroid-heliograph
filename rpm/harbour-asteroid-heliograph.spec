@@ -1,6 +1,6 @@
 Name:       harbour-asteroid-heliograph
 Summary:    Heliograph, a text banner
-Version:    1.0.1
+Version:    1.1.0
 Release:    1
 License:    GPLv3+
 URL:        https://github.com/moWerk/asteroid-heliograph
@@ -20,7 +20,7 @@ BuildRequires:  qt5-qttools-linguist
 %description
 Heliograph shows a message as a big scrolling banner, to be read from
 across a room or a street. Ready made messages in categories, plus your
-own in custom.txt. Ported from AsteroidOS.
+own, typed in the app or kept in custom.txt. Ported from AsteroidOS.
 
 %prep
 %setup -q -n %{name}-%{version}

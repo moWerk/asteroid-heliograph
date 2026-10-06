@@ -41,6 +41,7 @@ QStringList FileHelper::messagesForCategory(const QString &categoryKey) const
     }
 
     QTextStream in(&file);
+    in.setCodec("UTF-8");
     QStringList results;
     const QString prefix = categoryKey.toLower() + ":";
 
@@ -57,4 +58,72 @@ QStringList FileHelper::messagesForCategory(const QString &categoryKey) const
 
     file.close();
     return results;
+}
+
+// One line, no surrounding blanks: the file format is one message per line.
+static QString cleaned(const QString &text)
+{
+    QString t = text;
+    t.replace(QLatin1Char('\n'), QLatin1Char(' ')).replace(QLatin1Char('\r'), QLatin1Char(' '));
+    return t.simplified();
+}
+
+QString FileHelper::addMessage(const QString &text)
+{
+    const QString msg = cleaned(text);
+    if (msg.isEmpty())
+        return QString();
+    QFile file(dataFilePath());
+    // a file edited by hand may lack the final newline
+    bool needNewline = false;
+    if (file.open(QIODevice::ReadOnly)) {
+        needNewline = file.size() > 0 && file.seek(file.size() - 1) && file.read(1) != "\n";
+        file.close();
+    }
+    if (!file.open(QIODevice::Append | QIODevice::Text)) {
+        qWarning() << "FileHelper: cannot write" << file.fileName() << file.errorString();
+        return QString();
+    }
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    if (needNewline)
+        out << "\n";
+    out << "custom: " << msg << "\n";
+    return msg;
+}
+
+QString FileHelper::removeMessage(const QString &text)
+{
+    const QString msg = cleaned(text);
+    QFile file(dataFilePath());
+    if (msg.isEmpty() || !file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return QString();
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+    QStringList lines;
+    bool removed = false;
+    while (!in.atEnd()) {
+        const QString line = in.readLine();
+        const QString t = line.trimmed();
+        // only the first matching custom line; comments and other
+        // categories stay as they are
+        if (!removed && t.toLower().startsWith(QLatin1String("custom:"))
+                && t.mid(7).trimmed() == msg) {
+            removed = true;
+            continue;
+        }
+        lines << line;
+    }
+    file.close();
+    if (!removed)
+        return QString();
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
+        qWarning() << "FileHelper: cannot write" << file.fileName() << file.errorString();
+        return QString();
+    }
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    for (const QString &l : lines)
+        out << l << "\n";
+    return msg;
 }
