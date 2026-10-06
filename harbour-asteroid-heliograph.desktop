@@ -2,7 +2,7 @@
 Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=harbour-asteroid-heliograph
-Exec=harbour-asteroid-heliograph
+Exec=sailfish-qml harbour-asteroid-heliograph
 Name=Heliograph
 Comment=Show a message as a big scrolling banner
 

@@ -41,18 +41,23 @@ banner fills the whole screen when it runs.
   (or the keyboard's enter key). The message goes into the Custom
   category, which is the first one, and is shown at once. In the Custom
   category, **−** removes the shown message; it turns red first, a second
-  tap within 3 seconds deletes. Both edit
-  `~/.local/share/net.mowerk/harbour-asteroid-heliograph/custom.txt`,
-  where you can also add messages to the other categories by hand. The
-  first start copies the documented template there.
+  tap within 3 seconds deletes. Typed messages are kept by the app
+  (dconf, `/apps/harbour-asteroid-heliograph/typed`).
+- You can also write messages into a text file, for any category, as
+  `category: message` lines (template with all details:
+  `/usr/share/harbour-asteroid-heliograph/custom.txt`). Put it at
+  `~/.local/share/net.mowerk/harbour-asteroid-heliograph/custom.txt`
+  (SailfishOS 4 and later) or
+  `~/.local/share/harbour-asteroid-heliograph/harbour-asteroid-heliograph/custom.txt`
+  (SailfishOS 3). The app reads it at start but can not write it, so
+  **−** does not delete lines from the file; on such a message it says
+  "This one is in custom.txt".
 - The app reads the accelerometer to keep the banner level, so it asks
   once for the Sensors permission when it is started from the app grid.
 - The brightness is raised to maximum while a message is shown and set
   back when the app closes normally, as on the watch. If the app is
   killed, the brightness stays at maximum.
-- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.1.0-1.<arch>.rpm`
-  (aarch64 for 4.5 and later, armv7hl for 3.4 and later, i486 for 4.5
-  and later).
+- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.2.0-1.noarch.rpm`
 - Build: `mb2 -t SailfishOS-5.1.0.11-aarch64 build` with the Sailfish
   Platform SDK.
 
@@ -76,4 +81,26 @@ the phone yet.
 ```
 Disclosure: LLMGD-2 · origin O1 (author-requested feature, default design by the LLM; file and list logic checked by a test hook on one Jolla C2; the UI not seen; self-graded)
 LLMGD: v0.2; assurance=A2; flags=U,T; origin={O0:.8,O1:.2}; origin_headline=O0; scope=feature(code+docs); graded-by=claude-opus-5-5; retrieval=author-side
+```
+
+### Pure QML, one package for every phone (1.2.0)
+
+App developer poetaster pointed out in the forum that these ports need
+no compiled code. Since 1.2.0 Heliograph is QML only: the system's
+`sailfish-qml` launcher runs it, and one `noarch` package serves aarch64,
+32 bit ARM and x86, SailfishOS 3.4 to 5.1 (pkcon brings in the launcher,
+libsailfishapp-launcher, if it is missing; the package is xz compressed
+for rpm on 3.4). QML can read files but not write them, so typed
+messages moved from custom.txt into dconf; that is the trade-off above,
+chosen by the author. Messages typed with 1.1.0 are lines in custom.txt
+and stay there: shown as before, removable only in the file.
+
+Checked: installed and started on a Jolla C2 (5.1), the Jolla Tablet
+(4.6) and a Jolla 1 (3.4); custom.txt is read on all three (the data
+directory differs on 3.4, see above). Adding and removing typed
+messages has not been tried on the phone yet.
+
+```
+Disclosure: LLMGD-2 · origin O1 (forum idea, the author's choice of the trade-off; LLM-implemented; start and file read checked by log on three devices; add/remove not tried; self-graded)
+LLMGD: v0.2; assurance=A2; flags=U,T; origin={O0:.7,O1:.3}; origin_headline=O0; scope=packaging+code+docs; graded-by=claude-opus-5-5; retrieval=author-side
 ```

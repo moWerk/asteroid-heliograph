@@ -62,11 +62,4 @@ Item {
     MessagePage {
         anchors.fill: parent
     }
-
-    // Test hook (set from main.cpp): show the banner without a tap
-    Timer {
-        interval: 1000
-        running: typeof selftestAutostart !== "undefined" && selftestAutostart
-        onTriggered: app.messageOn = true
-    }
 }

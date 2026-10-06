@@ -17,7 +17,6 @@
 
 import QtQuick 2.6
 import QtSensors 5.2
-import moWerk.FileHelper 1.0
 import Sailfish.Silica 1.0 as Silica
 import "."
 
@@ -137,7 +136,7 @@ Item {
     // a QStringList from C++ arrives as a sequence wrapper; a plain array
     // is what indexOf, concat and JSON need
     function fileMessages(key) {
-        var list = FileHelper.messagesForCategory(key)
+        var list = MessageStore.messagesForCategory(key)
         var out = []
         for (var i = 0; i < list.length; i++) out.push(list[i])
         return out
@@ -168,24 +167,6 @@ Item {
     }
 
     Component.onCompleted: reload()
-
-    // Test hook (set from main.cpp): the + and - paths without taps
-    Timer {
-        interval: 1500
-        running: typeof selftestEdit !== "undefined" && selftestEdit
-        onTriggered: {
-            var t = "Selftest \u00e4\u00f6\u00fc \uD83D\uDE80 " + new Date().getTime()
-            var stored = FileHelper.addMessage("  " + t + "\nsecond line ")
-            root.reload(); root.showCustom(stored)
-            console.log("selftest edit: added '" + stored + "' categories " + JSON.stringify(root.categories)
-                        + " custom " + JSON.stringify(root.hasCustomCategory ? root.messages[0] : [])
-                        + " shown '" + root.messages[root.catIndex][root.msgIndex] + "'")
-            var gone = FileHelper.removeMessage(stored)
-            root.msgIndex = 0; root.reload(); root.showCustom("")
-            console.log("selftest edit: removed '" + gone + "' categories " + JSON.stringify(root.categories)
-                        + " shown '" + root.messages[root.catIndex][root.msgIndex] + "'")
-        }
-    }
 
     // after an edit: show the Custom category at the given message, or the
     // first category when the last own message is gone
@@ -367,23 +348,38 @@ Item {
         Item {
             id: removeButton
             property bool armed: false
+            // typed in the app: removable; from custom.txt: QML can not
+            // write the file, so the button says where the line lives
+            readonly property string shown: root.hasCustomCategory && root.catIndex === 0
+                                            ? root.messages[0][root.msgIndex] : ""
+            readonly property bool fromFile: shown !== "" && !MessageStore.isTyped(shown)
+            property bool hintFile: false
             width: Dims.l(12); height: width
             visible: root.hasCustomCategory && root.catIndex === 0
             Rectangle {
                 anchors.fill: parent; radius: width / 2
                 color: removeButton.armed ? "#B00020" : "#000000"
-                opacity: removeButton.armed ? 0.9 : 0.4
+                opacity: removeButton.armed ? 0.9 : (removeButton.fromFile ? 0.2 : 0.4)
             }
             Icon {
                 anchors.centerIn: parent
                 width: Dims.l(8); height: width
                 name: "ios-remove"
+                opacity: removeButton.fromFile ? 0.5 : 1.0
             }
-            Timer { id: disarm; interval: 3000; onTriggered: removeButton.armed = false }
+            Timer {
+                id: disarm; interval: 3000
+                onTriggered: { removeButton.armed = false; removeButton.hintFile = false }
+            }
             MouseArea {
                 anchors.fill: parent
                 anchors.margins: -Dims.l(3)
                 onClicked: {
+                    if (removeButton.fromFile) {
+                        removeButton.hintFile = true
+                        disarm.restart()
+                        return
+                    }
                     if (!removeButton.armed) {
                         removeButton.armed = true
                         disarm.restart()
@@ -391,7 +387,7 @@ Item {
                     }
                     removeButton.armed = false
                     disarm.stop()
-                    var gone = FileHelper.removeMessage(root.messages[0][root.msgIndex])
+                    var gone = MessageStore.removeMessage(removeButton.shown)
                     if (gone !== "") {
                         var next = root.msgIndex > 0 ? root.messages[0][root.msgIndex - 1] : ""
                         root.msgIndex = 0   // valid in any list while they change
@@ -407,9 +403,12 @@ Item {
         anchors.top: editButtons.bottom
         anchors.topMargin: Dims.l(2)
         anchors.horizontalCenter: parent.horizontalCenter
-        visible: removeButton.armed && editButtons.visible
-        //% "Tap again to delete"
-        text: qsTrId("id-tap-again-to-delete")
+        visible: (removeButton.armed || removeButton.hintFile) && editButtons.visible
+        text: removeButton.hintFile
+              //% "This one is in custom.txt"
+              ? qsTrId("id-message-in-file")
+              //% "Tap again to delete"
+              : qsTrId("id-tap-again-to-delete")
         font.pixelSize: Dims.l(5)
         opacity: 0.8
     }
@@ -432,7 +431,7 @@ Item {
             visible = false
         }
         function save() {
-            var stored = FileHelper.addMessage(input.text)
+            var stored = MessageStore.addMessage(input.text)
             close()
             if (stored !== "") {
                 root.reload()

@@ -13,7 +13,12 @@
 #   custom: You are breathtaking
 #   custom: Deploy to prod on Friday
 #
-# Messages you type in the app (the + below the messages) are added
-# here as custom: lines, and the - there removes them again.
+# This file is an example. To use it, copy it to the app's data directory:
+#   SailfishOS 4 and later: ~/.local/share/net.mowerk/harbour-asteroid-heliograph/custom.txt
+#   SailfishOS 3:           ~/.local/share/harbour-asteroid-heliograph/harbour-asteroid-heliograph/custom.txt
+#
+# Messages you type in the app (the + below the messages) are not written
+# here; the app keeps them itself and its - removes them. Lines from this
+# file can only be removed by editing the file.
 #
 # Changes made in this file take effect on next app launch.
