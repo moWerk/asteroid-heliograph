@@ -32,6 +32,8 @@ https://github.com/user-attachments/assets/66c30bc3-fb30-4363-a997-241118051b46
 
 ## SailfishOS
 
+Reviewing the code? Start with [review-and-architecture-hints.md](review-and-architecture-hints.md).
+
 The `sailfishos` branch is the SailfishOS version, built for Sailfish OS
 5.1 on aarch64 and run on a Jolla C2. The banner is the watch app; the
 controls keep the watch proportions across the phone's width, and the
