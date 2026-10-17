@@ -1,0 +1,5 @@
+Twemoji 15.1.0 (github.com/jdecked/twemoji), the six emoji of the Emoji
+category as SVG. Graphics (c) Twitter, Inc and other contributors,
+licensed under CC-BY 4.0 (LICENSE-GRAPHICS).
+SailfishOS ships the same artwork as an SVG-in-OpenType font, which
+Qt 5.6 draws only as its black-and-white fallback outlines.

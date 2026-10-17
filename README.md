@@ -35,31 +35,23 @@ https://github.com/user-attachments/assets/66c30bc3-fb30-4363-a997-241118051b46
 Reviewing the code? Start with [review-and-architecture-hints.md](review-and-architecture-hints.md).
 
 The `sailfishos` branch is the SailfishOS version, built for Sailfish OS
-5.1 on aarch64 and run on a Jolla C2. The banner is the watch app; the
-controls keep the watch proportions across the phone's width, and the
-banner fills the whole screen when it runs.
+5.1 on aarch64 and run on a Jolla C2. Since 1.3.0 the controls are
+SailfishOS's own (see below).
 
-- Your own messages: tap **+** below the messages, type, and tap Add
-  (or the keyboard's enter key). The message goes into the Custom
-  category, which is the first one, and is shown at once. In the Custom
-  category, **−** removes the shown message; it turns red first, a second
-  tap within 3 seconds deletes. Typed messages are kept by the app
-  (dconf, `/apps/harbour-asteroid-heliograph/typed`).
-- You can also write messages into a text file, for any category, as
-  `category: message` lines (template with all details:
-  `/usr/share/harbour-asteroid-heliograph/custom.txt`). Put it at
-  `~/.local/share/net.mowerk/harbour-asteroid-heliograph/custom.txt`
-  (SailfishOS 4 and later) or
-  `~/.local/share/harbour-asteroid-heliograph/harbour-asteroid-heliograph/custom.txt`
-  (SailfishOS 3). The app reads it at start but can not write it, so
-  **−** does not delete lines from the file; on such a message it says
-  "This one is in custom.txt".
+- Pick a category and a message, tap the preview to show the banner full
+  screen, tap again to close it. While it runs, drag along the banner to
+  change the scroll speed (or, for emoji, the blink rate).
+- Your own messages: **Add Message**, type, accept. The message goes into
+  the Custom category, the first one, and is shown at once. In the Custom
+  category, **Remove** deletes the shown message after the usual remorse
+  countdown. Typed messages are kept by the app (dconf,
+  `/apps/harbour-asteroid-heliograph/typed`).
 - The app reads the accelerometer to keep the banner level, so it asks
   once for the Sensors permission when it is started from the app grid.
 - The brightness is raised to maximum while a message is shown and set
   back when the app closes normally, as on the watch. If the app is
   killed, the brightness stays at maximum.
-- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.2.0-1.noarch.rpm`
+- Install: `devel-su pkcon install-local harbour-asteroid-heliograph-1.3.0-1.noarch.rpm`
 - Build: `mb2 -t SailfishOS-5.1.0.11-aarch64 build` with the Sailfish
   Platform SDK.
 
@@ -105,4 +97,36 @@ messages has not been tried on the phone yet.
 ```
 Disclosure: LLMGD-2 · origin O1 (forum idea, the author's choice of the trade-off; LLM-implemented; start and file read checked by log on three devices; add/remove not tried; self-graded)
 LLMGD: v0.2; assurance=A2; flags=U,T; origin={O0:.7,O1:.3}; origin_headline=O0; scope=packaging+code+docs; graded-by=claude-opus-5-5; retrieval=author-side
+```
+
+### Silica controls, live tile, smooth banner (1.3.0)
+
+Forum user nthn pointed out that Silica is more than a transparent theme.
+Up to 1.2.0 the app ran the watch interface inside a SailfishOS page, with
+its own dark background over the ambience. 1.3.0 is a SailfishOS page:
+
+- The ambience shows through. Category and message are pickers that open
+  their list below them, the page scrolls so a long list fits.
+- Add Message opens a dialog page; Remove uses the remorse countdown.
+- The home screen tile is the banner, scaled down: black, the message
+  scrolling through (or the emoji blinking) at the set speed.
+- The six emoji of the Emoji category are Twemoji pictures in colour.
+  SailfishOS ships the same artwork as a font, but Qt 5.6 draws that font
+  only as outlines. Emoji in typed messages still come from the font.
+- The banner moves on the render thread (an XAnimator); the timer that
+  moved it before gave uneven steps that showed as stutter on the C2.
+- custom.txt is gone: own messages are typed in the app. A custom.txt from
+  an older version is no longer read.
+
+<img src="screenshots/heliograph-1.png" width="270" alt="Message page"> <img src="screenshots/heliograph-2.png" width="270" alt="Full screen banner, held sideways and turned level with the tilt">
+
+Twemoji graphics (c) Twitter, Inc and other contributors, CC-BY 4.0
+(`qml/images/twemoji/`).
+
+Checked: the author used it on a Jolla C2 (5.1) and set the layout. Not
+checked on the Jolla Tablet (4.6) or the Jolla 1 (3.4).
+
+```
+Disclosure: LLMGD-3 · origin O1 (prompted by a forum post; layout, live tile and emoji asked for by the author, set and used by him on a Jolla C2; LLM-implemented; self-graded)
+LLMGD: v0.3; assurance=A3; flags=U,T; origin={O0:.5,O1:.5}; origin_headline=O1; scope=code+assets+packaging+docs; graded-by=claude-opus-5-5; retrieval=author-side
 ```

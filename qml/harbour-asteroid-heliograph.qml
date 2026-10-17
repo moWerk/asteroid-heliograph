@@ -17,108 +17,51 @@
 
 import QtQuick 2.6
 import Sailfish.Silica 1.0
-import "game" as Game
+import "pages"
 
 ApplicationWindow {
     id: app
 
+    property bool   messageOn: false
+
+    // the shown banner, set by the page, for the cover
+    property string currentMessage: ""
+    property bool   blinkMode:    false
+    property bool   smallFont:    false
+    property real   bannerSpeed:  900
+    property real   blinkCycleMs: 1200
+    property real   screenWidth:  1
+
     allowedOrientations: Orientation.Portrait
 
-    // The app lives in the page while it is in front. When it goes to the
-    // background the same scene is moved into the cover, scaled down, so
-    // the home screen tile shows it live.
-    property Item stageItem: null
-    property Item stageHome: null
-    property Item coverHolder: null
+    // A banner in the background would show to nobody; it closes when the
+    // app leaves the screen.
+    onApplicationActiveChanged: if (!applicationActive) messageOn = false
 
-    function placeStage() {
-        if (!stageItem) return
-        if (applicationActive || !coverHolder) {
-            if (stageItem.parent !== stageHome) {
-                stageItem.parent = stageHome
-                stageItem.scale = 1
-            }
-        } else {
-            stageItem.parent = coverHolder
-            stageItem.scale = Math.min(coverHolder.width / stageItem.width,
-                                       coverHolder.height / stageItem.height)
-        }
-    }
+    initialPage: Component { MessagePage { } }
 
-    onApplicationActiveChanged: placeStage()
-    onCoverHolderChanged: placeStage()
-
-    initialPage: Component {
-        Page {
-            id: page
-
-            // false: the play field fills the screen.
-            // true:  a square field as on a watch, centred.
-            property bool squareStage: false
-
-            allowedOrientations: Orientation.Portrait
-            backNavigation: false
-            showNavigationIndicator: false
-
-            Rectangle {
-                anchors.fill: parent
-                color: "black"
-            }
-
-            Item {
-                id: stage
-                property Item game: gameLoader.item
-                width: page.squareStage ? Math.min(page.width, page.height) : page.width
-                height: page.squareStage ? width : page.height
-                anchors.centerIn: parent
-                clip: true
-
-                Loader {
-                    id: gameLoader
-                    anchors.fill: parent
-                    active: false
-                    source: "game/main.qml"
-                }
-            }
-
-            Component.onCompleted: {
-                app.stageHome = page
-                app.stageItem = stage
-            }
-
-            // The game reads its scale once at start, so the size has to
-            // be known before it is loaded.
-            onStatusChanged: {
-                if (status === PageStatus.Active && !gameLoader.active) {
-                    Game.Dims.width = stage.width
-                    // laid out for a square watch: sizes follow the width
-                    Game.Dims.height = stage.width
-                    gameLoader.active = true
-                }
-            }
-        }
-    }
-
+    // The home screen tile is the full screen banner, scaled down: black,
+    // the message scrolling through at the same pace relative to the width.
     cover: Component {
         CoverBackground {
+            id: cover
+
             Rectangle {
                 anchors.fill: parent
                 color: "black"
             }
 
-            // the play field is moved in here while the app is in the background
-            Item {
-                id: holder
+            BannerView {
                 anchors.fill: parent
                 clip: true
-                Component.onCompleted: app.coverHolder = holder
-                Component.onDestruction: app.coverHolder = null
-            }
-
-            Label {
-                anchors.centerIn: parent
-                text: "Heliograph"
-                visible: !app.stageItem || app.stageItem.parent !== holder
+                message: app.currentMessage
+                blinkMode: app.blinkMode
+                smallFont: app.smallFont
+                base: width
+                big: true
+                pixelsPerSecond: app.bannerSpeed * width / app.screenWidth
+                blinkCycleMs: app.blinkCycleMs
+                running: cover.status === Cover.Active
             }
         }
     }

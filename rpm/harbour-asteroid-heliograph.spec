@@ -3,7 +3,7 @@
 
 Name:       harbour-asteroid-heliograph
 Summary:    Heliograph, a text banner
-Version:    1.2.0
+Version:    1.3.0
 Release:    1
 License:    GPLv3+
 URL:        https://github.com/moWerk/asteroid-heliograph
@@ -12,7 +12,6 @@ BuildArch:  noarch
 Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   libsailfishapp-launcher
 Requires:   nemo-qml-plugin-configuration-qt5
-Requires:   qt5-qtgraphicaleffects
 Requires:   libkeepalive
 Requires:   nemo-qml-plugin-systemsettings
 Requires:   qt5-qtdeclarative-import-sensors
@@ -25,7 +24,7 @@ BuildRequires:  qt5-qttools-linguist
 %description
 Heliograph shows a message as a big scrolling banner, to be read from
 across a room or a street. Ready made messages in categories, plus your
-own, typed in the app or kept in custom.txt. Ported from AsteroidOS.
+own, typed in the app. Ported from AsteroidOS.
 
 %prep
 %setup -q -n %{name}-%{version}

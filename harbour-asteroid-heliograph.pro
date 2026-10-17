@@ -17,12 +17,8 @@ for(size, $$list(86x86 108x108 128x128 172x172)) {
     INSTALLS += icon$${size}
 }
 
-custom.files = custom.txt
-custom.path = /usr/share/$${TARGET}
-INSTALLS += custom
-
 DISTFILES += qml/$${TARGET}.qml \
-    $$files(qml/game/*) \
+    $$files(qml/pages/*) \
     rpm/$${TARGET}.spec \
     $${TARGET}.desktop
 
